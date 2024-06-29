@@ -3,7 +3,7 @@
 set -e
 
 # Determine the latest version (you would need to implement this based on your release strategy)
-VERSION="v1.0.0"
+VERSION="v1.0.1"
 
 # Determine system architecture
 ARCH=$(uname -m)

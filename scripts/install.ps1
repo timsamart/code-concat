@@ -1,5 +1,5 @@
 # Determine the latest version (you would need to implement this based on your release strategy)
-$VERSION = "v1.0.0"
+$VERSION = "v1.0.1"
 
 # Determine system architecture
 $ARCH = if ([Environment]::Is64BitOperatingSystem) { "amd64" } else { "386" }
