@@ -2,9 +2,11 @@ package utils
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 func ValidateDirectory(path string) error {
@@ -19,17 +21,26 @@ func ValidateDirectory(path string) error {
 }
 
 func IsGitIgnored(path string) bool {
+	// Remove trailing slash if present
+	path = strings.TrimSuffix(path, string(os.PathSeparator))
+
 	cmd := exec.Command("git", "check-ignore", "-q", path)
 	cmd.Dir = filepath.Dir(path)
 	err := cmd.Run()
 	if err != nil {
 		if exitErr, ok := err.(*exec.ExitError); ok {
+			log.Printf("Git check-ignore exit code for %s: %d", path, exitErr.ExitCode())
 			if exitErr.ExitCode() == 128 {
+				// Exit code 128 means the directory is not a Git repository or doesn't have a .gitignore file
 				return false
 			}
 		}
+		// If the error is not an ExitError, it means the 'git' command was not found or another error occurred
+		log.Printf("Git check-ignore error for %s: %v", path, err)
 		return false
 	}
+	// If err is nil, it means the path is ignored
+	log.Printf("Git check-ignore indicates %s is ignored", path)
 	return true
 }
 

@@ -1,15 +1,28 @@
 package integration_test
 
 import (
-	"bytes"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	"github.com/timsamart/code-concat/cmd/dircopier"
+	"github.com/sergi/go-diff/diffmatchpatch"
+	"github.com/timsamart/code-concat/internal/processor"
 )
+
+type MockClipboard struct {
+	content string
+}
+
+func (m *MockClipboard) WriteAll(text string) error {
+	m.content = text
+	return nil
+}
+
+func (m *MockClipboard) ReadAll() (string, error) {
+	return m.content, nil
+}
 
 func TestDirectoryConcatenation(t *testing.T) {
 	// Create a temporary directory for our test files
@@ -22,38 +35,73 @@ func TestDirectoryConcatenation(t *testing.T) {
 	// Create test file structure
 	createTestFiles(t, tempDir)
 
+	// Create a mock clipboard
+	mockClipboard := &MockClipboard{}
+
 	// Run the tool
-	var output bytes.Buffer
-	processor := dircopier.NewProcessor(1024, true, []string{"excluded"})
-	err = processor.ProcessDirectory(tempDir, &output)
+	p := processor.NewProcessor(1024, true, []string{"excluded"}, mockClipboard)
+	content, err := p.ProcessDirectory(tempDir)
 	if err != nil {
 		t.Fatalf("ProcessDirectory failed: %v", err)
 	}
 
 	// Verify output
-	result := output.String()
+	expectedContent := `<file1.txt>
+` + "```" + `
+This is file 1
+` + "```" + `
 
-	// Check if all non-excluded files are included
-	expectedFiles := []string{"file1.txt", "file2.py", "subdir/file3.html"}
-	for _, file := range expectedFiles {
-		if !strings.Contains(result, file) {
-			t.Errorf("Output doesn't contain expected file: %s", file)
-		}
+<file2.py>
+` + "```python" + `
+print('Hello, World!')
+` + "```" + `
+
+<subdir/file3.html>
+` + "```html" + `
+<html><body>Test</body></html>
+` + "```" + `
+
+<test.srt>
+` + "```" + `
+Speaker 1:
+Hello
+Speaker 2:
+Hi
+` + "```" + `
+
+
+`
+
+	// Print full expected content
+	t.Logf("Expected content:\n%s", expectedContent)
+
+	// Print full actual content
+	t.Logf("Actual content:\n%s", content)
+
+	// Save actual output to file
+	err = ioutil.WriteFile("actual_output.txt", []byte(content), 0644)
+	if err != nil {
+		t.Fatalf("Failed to write actual output: %v", err)
 	}
 
-	// Check if excluded directory is not included
-	if strings.Contains(result, "excluded/file4.txt") {
-		t.Errorf("Output contains file from excluded directory")
+	// Save expected output to file
+	err = ioutil.WriteFile("expected_output.txt", []byte(expectedContent), 0644)
+	if err != nil {
+		t.Fatalf("Failed to write expected output: %v", err)
 	}
 
-	// Check if SRT file is processed correctly
-	if !strings.Contains(result, "Speaker 1:") || strings.Contains(result, "00:00:01,000") {
-		t.Errorf("SRT file not processed correctly")
+	if content != expectedContent {
+		dmp := diffmatchpatch.New()
+		diffs := dmp.DiffMain(expectedContent, content, true)
+		t.Errorf("Content mismatch. Diff:\n%s", dmp.DiffPrettyText(diffs))
+		t.Errorf("Please check 'expected_output.txt' and 'actual_output.txt' for detailed comparison")
 	}
 
-	// Check if file size limit is respected
-	if strings.Contains(result, "large_file.txt") {
-		t.Errorf("Output contains large file that should have been skipped")
+	// Check if content was "copied" to our mock clipboard
+	if mockClipboard.content != expectedContent {
+		dmp := diffmatchpatch.New()
+		diffs := dmp.DiffMain(expectedContent, mockClipboard.content, true)
+		t.Errorf("Clipboard content mismatch. Diff:\n%s", dmp.DiffPrettyText(diffs))
 	}
 }
 
@@ -64,7 +112,7 @@ func createTestFiles(t *testing.T, baseDir string) {
 		"subdir/file3.html":  "<html><body>Test</body></html>",
 		"excluded/file4.txt": "This should be excluded",
 		"test.srt":           "1\n00:00:01,000 --> 00:00:02,000\nSpeaker 1: Hello\n\n2\n00:00:03,000 --> 00:00:04,000\nSpeaker 2: Hi",
-		"large_file.txt":     strings.Repeat("a", 2048),
+		"large_file.txt":     strings.Repeat("a", 2*1024*1024), // 2MB file
 	}
 
 	for path, content := range files {

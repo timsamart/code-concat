@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/atotto/clipboard"
 	"github.com/timsamart/code-concat/internal/processor"
 	"github.com/timsamart/code-concat/internal/utils"
 )
@@ -46,10 +47,23 @@ func main() {
 		log.Fatalf("Directory validation failed: %v", err)
 	}
 
-	p := processor.NewProcessor(maxSizeKB, processSRT, excludedDirs)
-	if err := p.ProcessDirectory(directoryPath); err != nil {
+	clipboardWriter := &clipboardWrapper{}
+	p := processor.NewProcessor(maxSizeKB, processSRT, excludedDirs, clipboardWriter)
+	content, err := p.ProcessDirectory(directoryPath)
+	if err != nil {
 		log.Fatalf("Error processing directory: %v", err)
 	}
 
+	if err := clipboard.WriteAll(content); err != nil {
+		log.Fatalf("Failed to copy content to clipboard: %v", err)
+	}
+
 	fmt.Println("Content copied to clipboard.")
+}
+
+// clipboardWrapper implements the ClipboardWriter interface
+type clipboardWrapper struct{}
+
+func (cw *clipboardWrapper) WriteAll(text string) error {
+	return clipboard.WriteAll(text)
 }

@@ -1,0 +1,24 @@
+<file1.txt>
+```
+This is file 1
+```
+
+<file2.py>
+```python
+print('Hello, World!')
+```
+
+<subdir/file3.html>
+```html
+<html><body>Test</body></html>
+```
+
+<test.srt>
+```
+Speaker 1:
+Hello
+Speaker 2:
+Hi
+```
+
+
