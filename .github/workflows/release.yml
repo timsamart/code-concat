@@ -71,30 +71,30 @@ jobs:
         GOOS: ${{ matrix.goos }}
         GOARCH: ${{ matrix.goarch }}
       run: |
-        go build -v -o code-concat-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.extension }} ./cmd/codeconcat
+        go build -v -o code-concat_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.extension }} ./cmd/codeconcat
 
     - name: Display built files
-      run: ls -l code-concat-*
+      run: ls -l code-concat_*
 
     - name: Zip Windows binary
       if: matrix.goos == 'windows'
-      run: zip code-concat-${{ matrix.goos }}-${{ matrix.goarch }}.zip code-concat-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.extension }}
+      run: zip code-concat_${{ matrix.goos }}_${{ matrix.goarch }}.zip code-concat_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.extension }}
 
     - name: Generate SHA256 checksum
       run: |
         if [ "${{ matrix.goos }}" = "windows" ]; then
-          sha256sum code-concat-${{ matrix.goos }}-${{ matrix.goarch }}.zip > code-concat-${{ matrix.goos }}-${{ matrix.goarch }}.sha256
+          sha256sum code-concat_${{ matrix.goos }}_${{ matrix.goarch }}.zip > code-concat_${{ matrix.goos }}_${{ matrix.goarch }}.sha256
         else
-          sha256sum code-concat-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.extension }} > code-concat-${{ matrix.goos }}-${{ matrix.goarch }}.sha256
+          sha256sum code-concat_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.extension }} > code-concat_${{ matrix.goos }}_${{ matrix.goarch }}.sha256
         fi
 
     - name: Upload release asset
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          code-concat-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.extension }}
-          code-concat-${{ matrix.goos }}-${{ matrix.goarch }}.sha256
-          ${{ matrix.goos == 'windows' && format('code-concat-{0}-{1}.zip', matrix.goos, matrix.goarch) || '' }}
+          code-concat_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.extension }}
+          code-concat_${{ matrix.goos }}_${{ matrix.goarch }}.sha256
+          ${{ matrix.goos == 'windows' && format('code-concat_{0}_{1}.zip', matrix.goos, matrix.goarch) || '' }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
