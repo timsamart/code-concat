@@ -5,20 +5,20 @@ $VERSION = "v1.0.0"
 $ARCH = if ([Environment]::Is64BitOperatingSystem) { "amd64" } else { "386" }
 
 # Set the download URL
-$URL = "https://github.com/timsamart/code-concat/releases/download/${VERSION}/dircopier_windows_${ARCH}.exe"
+$URL = "https://github.com/timsamart/code-concat/releases/download/${VERSION}/code-concat_windows_${ARCH}.exe"
 
 # Set the installation directory
 $INSTALL_DIR = "$env:USERPROFILE\AppData\Local\Microsoft\WindowsApps"
 
 # Download the binary
 Write-Host "Downloading Code-Concat..."
-Invoke-WebRequest -Uri $URL -OutFile "dircopier.exe"
+Invoke-WebRequest -Uri $URL -OutFile "codeconcat.exe"
 
 # Move the binary to the installation directory
-Move-Item -Path "dircopier.exe" -Destination "$INSTALL_DIR\dircopier.exe" -Force
+Move-Item -Path "codeconcat.exe" -Destination "$INSTALL_DIR\codeconcat.exe" -Force
 
-Write-Host "Code-Concat has been installed to $INSTALL_DIR\dircopier.exe"
-Write-Host "You can now use it by running 'dircopier' in your PowerShell or Command Prompt."
+Write-Host "Code-Concat has been installed to $INSTALL_DIR\codeconcat.exe"
+Write-Host "You can now use it by running 'codeconcat' in your PowerShell or Command Prompt."
 
 # Add the installation directory to the PATH if it's not already there
 if ($env:Path -notlike "*$INSTALL_DIR*") {

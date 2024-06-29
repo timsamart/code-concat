@@ -13,7 +13,7 @@ directory-copier/
 ├── go.sum
 ├── main.go
 ├── cmd/
-│   └── dircopier/
+│   └── codeconcat/
 │       └── main.go
 ├── internal/
 │   ├── processor/
@@ -52,7 +52,7 @@ directory-copier/
    ```
 4. Build the application:
    ```
-   go build -o dircopier cmd/dircopier/main.go
+   go build -o codeconcat cmd/codeconcat/main.go
    ```
 5. Move the built binary to a location in your PATH.
 
@@ -73,7 +73,7 @@ Invoke-Expression (Invoke-WebRequest -Uri https://raw.githubusercontent.com/tims
 ## Usage
 
 ```
-dircopier [flags] <directoryPath>
+codeconcat [flags] <directoryPath>
 ```
 
 ### Flags:
@@ -85,7 +85,7 @@ dircopier [flags] <directoryPath>
 ### Example:
 
 ```
-dircopier --srt --size 2048 --exclude node_modules,vendor /path/to/directory
+codeconcat --srt --size 2048 --exclude node_modules,vendor /path/to/directory
 ```
 
 ## Contributing
@@ -109,7 +109,7 @@ directory-copier/
 ├── go.sum
 ├── main.go
 ├── cmd/
-│   └── dircopier/
+│   └── codeconcat/
 │       └── main.go
 ├── internal/
 │   ├── processor/
@@ -148,7 +148,7 @@ directory-copier/
    ```
 4. Build the application:
    ```
-   go build -o dircopier cmd/dircopier/main.go
+   go build -o codeconcat cmd/codeconcat/main.go
    ```
 5. Move the built binary to a location in your PATH.
 
@@ -169,7 +169,7 @@ Invoke-Expression (Invoke-WebRequest -Uri https://raw.githubusercontent.com/tims
 ## Usage
 
 ```
-dircopier [flags] <directoryPath>
+codeconcat [flags] <directoryPath>
 ```
 
 ### Flags:
@@ -181,7 +181,7 @@ dircopier [flags] <directoryPath>
 ### Example:
 
 ```
-dircopier --srt --size 2048 --exclude node_modules,vendor /path/to/directory
+codeconcat --srt --size 2048 --exclude node_modules,vendor /path/to/directory
 ```
 
 ## Contributing

@@ -35,7 +35,7 @@ func init() {
 	flag.Parse()
 
 	if flag.NArg() != 1 {
-		fmt.Println("Usage: dircopier [flags] <directoryPath>")
+		fmt.Println("Usage: codeconcat [flags] <directoryPath>")
 		os.Exit(1)
 	}
 

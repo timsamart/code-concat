@@ -27,20 +27,20 @@ esac
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 
 # Set the download URL
-URL="https://github.com/timsamart/code-concat/releases/download/${VERSION}/dircopier_${OS}_${ARCH}"
+URL="https://github.com/timsamart/code-concat/releases/download/${VERSION}/code-concat_${OS}_${ARCH}"
 
 # Set the installation directory
 INSTALL_DIR="/usr/local/bin"
 
 # Download the binary
 echo "Downloading Code-Concat..."
-curl -L "${URL}" -o dircopier
+curl -L "${URL}" -o codeconcat
 
 # Make the binary executable
-chmod +x dircopier
+chmod +x codeconcat
 
 # Move the binary to the installation directory
-sudo mv dircopier "${INSTALL_DIR}"
+sudo mv codeconcat "${INSTALL_DIR}"
 
-echo "Code-Concat has been installed to ${INSTALL_DIR}/dircopier"
-echo "You can now use it by running 'dircopier' in your terminal."
+echo "Code-Concat has been installed to ${INSTALL_DIR}/codeconcat"
+echo "You can now use it by running 'codeconcat' in your terminal."

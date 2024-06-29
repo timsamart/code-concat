@@ -71,7 +71,7 @@ jobs:
         GOOS: ${{ matrix.goos }}
         GOARCH: ${{ matrix.goarch }}
       run: |
-        go build -v -o code-concat-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.extension }} ./cmd/dircopier
+        go build -v -o code-concat-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.extension }} ./cmd/codeconcat
 
     - name: Display built files
       run: ls -l code-concat-*
