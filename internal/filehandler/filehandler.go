@@ -6,7 +6,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/yourusername/directory-copier/internal/utils"
+	"github.com/timsamart/code-concat/internal/utils"
 )
 
 func HandleFile(buffer *bytes.Buffer, path string, content []byte, processSRT bool) {

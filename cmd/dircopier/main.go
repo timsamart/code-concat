@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/yourusername/directory-copier/internal/processor"
-	"github.com/yourusername/directory-copier/internal/utils"
+	"github.com/timsamart/code-concat/internal/processor"
+	"github.com/timsamart/code-concat/internal/utils"
 )
 
 var (

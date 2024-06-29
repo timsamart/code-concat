@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 
 	"github.com/atotto/clipboard"
-	"github.com/yourusername/directory-copier/internal/filehandler"
-	"github.com/yourusername/directory-copier/internal/utils"
+	"github.com/timsamart/code-concat/internal/filehandler"
+	"github.com/timsamart/code-concat/internal/utils"
 )
 
 type Processor struct {

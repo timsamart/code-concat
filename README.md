@@ -61,13 +61,13 @@ directory-copier/
 #### For Linux/macOS:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/yourusername/directory-copier/main/scripts/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/timsamart/code-concat/main/scripts/install.sh | bash
 ```
 
 #### For Windows (PowerShell):
 
 ```powershell
-Invoke-Expression (Invoke-WebRequest -Uri https://raw.githubusercontent.com/yourusername/directory-copier/main/scripts/install.ps1 -UseBasicParsing).Content
+Invoke-Expression (Invoke-WebRequest -Uri https://raw.githubusercontent.com/timsamart/code-concat/main/scripts/install.ps1 -UseBasicParsing).Content
 ```
 
 ## Usage
@@ -157,13 +157,13 @@ directory-copier/
 #### For Linux/macOS:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/yourusername/directory-copier/main/scripts/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/timsamart/code-concat/main/scripts/install.sh | bash
 ```
 
 #### For Windows (PowerShell):
 
 ```powershell
-Invoke-Expression (Invoke-WebRequest -Uri https://raw.githubusercontent.com/yourusername/directory-copier/main/scripts/install.ps1 -UseBasicParsing).Content
+Invoke-Expression (Invoke-WebRequest -Uri https://raw.githubusercontent.com/timsamart/code-concat/main/scripts/install.ps1 -UseBasicParsing).Content
 ```
 
 ## Usage
