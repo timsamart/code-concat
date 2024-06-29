@@ -1,0 +1,89 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+          - goos: linux
+            goarch: arm64
+          - goos: windows
+            goarch: amd64
+            extension: .exe
+          - goos: darwin
+            goarch: amd64
+          - goos: darwin
+            goarch: arm64
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.22.0
+
+    - name: Build
+      env:
+        GOOS: ${{ matrix.goos }}
+        GOARCH: ${{ matrix.goarch }}
+      run: |
+        go build -v -o code-concat-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.extension }} ./cmd/dircopier
+
+    - name: Display built files
+      run: ls -l code-concat-*
+
+    - name: Zip Windows binary
+      if: matrix.goos == 'windows'
+      run: zip code-concat-${{ matrix.goos }}-${{ matrix.goarch }}.zip code-concat-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.extension }}
+
+    - name: Generate SHA256 checksum
+      run: |
+        if [ "${{ matrix.goos }}" = "windows" ]; then
+          sha256sum code-concat-${{ matrix.goos }}-${{ matrix.goarch }}.zip > code-concat-${{ matrix.goos }}-${{ matrix.goarch }}.sha256
+        else
+          sha256sum code-concat-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.extension }} > code-concat-${{ matrix.goos }}-${{ matrix.goarch }}.sha256
+        fi
+
+    - name: Upload release asset
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: |
+          code-concat-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.extension }}
+          code-concat-${{ matrix.goos }}-${{ matrix.goarch }}.sha256
+          ${{ matrix.goos == 'windows' && format('code-concat-{0}-{1}.zip', matrix.goos, matrix.goarch) || '' }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  create-release-notes:
+    name: Create Release Notes
+    runs-on: ubuntu-latest
+    needs: build-and-release
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Generate release notes
+      run: |
+        echo "# Release Notes for $(git describe --tags --abbrev=0)" > RELEASE_NOTES.md
+        echo "" >> RELEASE_NOTES.md
+        git log $(git describe --tags --abbrev=0 @^)..@ --pretty=format:"- %s" >> RELEASE_NOTES.md
+
+    - name: Update release with notes
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        body_path: RELEASE_NOTES.md
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
