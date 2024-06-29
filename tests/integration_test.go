@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/timsamart/cli-tools/code-concat/cmd/dircopier"
+	"github.com/timsamart/code-concat/cmd/dircopier"
 )
 
 func TestDirectoryConcatenation(t *testing.T) {
